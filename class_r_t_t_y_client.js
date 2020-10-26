@@ -1,6 +1,7 @@
 var class_r_t_t_y_client =
 [
     [ "RTTYClient", "class_r_t_t_y_client.html#ae6bc08fa88457ee00a992448be1d63ea", null ],
+    [ "RTTYClient", "class_r_t_t_y_client.html#ab0e11944c2f1e2c60fc45bcd2db18570", null ],
     [ "begin", "class_r_t_t_y_client.html#ad8856bc336b9a70f8239084740c22c10", null ],
     [ "idle", "class_r_t_t_y_client.html#ac477e65ea756e56bb9043d778a51b4bc", null ],
     [ "print", "class_r_t_t_y_client.html#ab31265a133757ae99b1fd6de074a1824", null ],
@@ -17,7 +18,7 @@ var class_r_t_t_y_client =
     [ "println", "class_r_t_t_y_client.html#ac5d60281fe24f0724ffd727034d2851d", null ],
     [ "println", "class_r_t_t_y_client.html#a7201a35a28f1c43ab16c71b69153e232", null ],
     [ "println", "class_r_t_t_y_client.html#a02feea7bcdeaee42f91507d34399777d", null ],
-    [ "println", "class_r_t_t_y_client.html#a042b4bb9661e95c4437fe1dce8b4b9a3", null ],
+    [ "println", "class_r_t_t_y_client.html#af51f7af5ca169a1dcfab604789b466dc", null ],
     [ "println", "class_r_t_t_y_client.html#a7ec7cc1dd981198972a0d4ad031dd987", null ],
     [ "println", "class_r_t_t_y_client.html#a9086c57441dc8712d940a0186e3c573e", null ],
     [ "println", "class_r_t_t_y_client.html#a73281624d10f9c05810527f4762fdeb9", null ],
