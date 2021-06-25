@@ -792,10 +792,35 @@ class Si443x: public PhysicalLayer {
    */
     uint8_t random();
 
-#ifndef RADIOLIB_GODMODE
+    /*!
+     \brief Read version SPI register. Should return SI443X_DEVICE_VERSION (0x06) if Si443x is connected and working.
+
+     \returns Version register contents or \ref status_codes
+   */
+    int16_t getChipVersion();
+
+    /*!
+      \brief Set interrupt service routine function to call when data bit is receveid in direct mode.
+
+      \param func Pointer to interrupt service routine.
+    */
+    void setDirectAction(void (*func)(void));
+
+    /*!
+      \brief Function to read and process data bit in direct reception mode.
+
+      \param pin Pin on which to read.
+    */
+    void readBit(RADIOLIB_PIN_TYPE pin);
+
+#if !defined(RADIOLIB_GODMODE) && !defined(RADIOLIB_LOW_LEVEL)
   protected:
 #endif
     Module* _mod;
+
+#if !defined(RADIOLIB_GODMODE)
+  protected:
+#endif
 
     float _br = 0;
     float _freqDev = 0;
@@ -806,7 +831,7 @@ class Si443x: public PhysicalLayer {
 
     int16_t setFrequencyRaw(float newFreq);
 
-#ifndef RADIOLIB_GODMODE
+#if !defined(RADIOLIB_GODMODE)
   private:
 #endif
     bool findChip();

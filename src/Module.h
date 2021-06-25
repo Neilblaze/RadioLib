@@ -86,9 +86,9 @@ class Module {
 
       \param spi SPI interface to be used, can also use software SPI implementations.
 
-      \param spiSettings SPI interface settings.
+      \param spiSettings SPI interface settings. Defaults to 2 MHz clock, MSB first, mode 0.
     */
-    Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rst, RADIOLIB_PIN_TYPE gpio, SPIClass& spi, SPISettings spiSettings);
+    Module(RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rst, RADIOLIB_PIN_TYPE gpio, SPIClass& spi, SPISettings spiSettings = SPISettings(2000000, MSBFIRST, SPI_MODE0));
 
     /*!
       \brief Generic module constructor.
@@ -238,9 +238,11 @@ class Module {
 
       \param checkInterval Number of milliseconds between register writing and verification reading. Some registers need up to 10ms to process the change.
 
+      \param checkMask Mask of bits to check, only bits set to 1 will be verified.
+
       \returns \ref status_codes
     */
-    int16_t SPIsetRegValue(uint8_t reg, uint8_t value, uint8_t msb = 7, uint8_t lsb = 0, uint8_t checkInterval = 2);
+    int16_t SPIsetRegValue(uint8_t reg, uint8_t value, uint8_t msb = 7, uint8_t lsb = 0, uint8_t checkInterval = 2, uint8_t checkMask = 0xFF);
 
     /*!
       \brief SPI burst read method.
@@ -465,6 +467,16 @@ class Module {
       \brief Arduino core micros override.
     */
     static uint32_t micros();
+
+    /*!
+      \brief Function to reflect bits within a byte.
+    */
+    static uint8_t flipBits(uint8_t b);
+
+    /*!
+      \brief Function to reflect bits within an integer.
+    */
+    static uint16_t flipBits16(uint16_t i);
 
 #ifndef RADIOLIB_GODMODE
   private:

@@ -10,6 +10,7 @@ int16_t nRF24::begin(int16_t freq, int16_t dataRate, int8_t power, uint8_t addrW
   _mod->SPIreadCommand = NRF24_CMD_READ;
   _mod->SPIwriteCommand = NRF24_CMD_WRITE;
   _mod->init(RADIOLIB_USE_SPI);
+  Module::pinMode(_mod->getIrq(), INPUT);
 
   // set pin mode on RST (connected to nRF24 CE pin)
   Module::pinMode(_mod->getRst(), OUTPUT);
@@ -25,6 +26,7 @@ int16_t nRF24::begin(int16_t freq, int16_t dataRate, int8_t power, uint8_t addrW
     _mod->term(RADIOLIB_USE_SPI);
     return(ERR_CHIP_NOT_FOUND);
   }
+  RADIOLIB_DEBUG_PRINTLN(F("M\tnRF24"));
 
   // configure settings inaccessible by public API
   int16_t state = config();
@@ -457,32 +459,32 @@ int16_t nRF24::setCrcFiltering(bool crcOn) {
   }
 
   // Disable CRC
-  return _mod->SPIsetRegValue(NRF24_REG_CONFIG, crcOn ? NRF24_CRC_ON : NRF24_CRC_OFF, 3, 3);
+  return _mod->SPIsetRegValue(NRF24_REG_CONFIG, (crcOn ? NRF24_CRC_ON : NRF24_CRC_OFF), 3, 3);
 }
 
 int16_t nRF24::setAutoAck(bool autoAckOn){
-  return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_ALL_ON : NRF24_AA_ALL_OFF, 5, 0);
+  return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_ALL_ON : NRF24_AA_ALL_OFF), 5, 0);
 }
 
 int16_t nRF24::setAutoAck(uint8_t pipeNum, bool autoAckOn){
   switch(pipeNum) {
     case 0:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P0_ON : NRF24_AA_P0_OFF, 0, 0);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P0_ON : NRF24_AA_P0_OFF), 0, 0);
       break;
     case 1:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P1_ON : NRF24_AA_P1_OFF, 1, 1);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P1_ON : NRF24_AA_P1_OFF), 1, 1);
       break;
     case 2:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P2_ON : NRF24_AA_P2_OFF, 2, 2);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P2_ON : NRF24_AA_P2_OFF), 2, 2);
       break;
     case 3:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P3_ON : NRF24_AA_P3_OFF, 3, 3);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P3_ON : NRF24_AA_P3_OFF), 3, 3);
       break;
     case 4:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P4_ON : NRF24_AA_P4_OFF, 4, 4);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P4_ON : NRF24_AA_P4_OFF), 4, 4);
       break;
     case 5:
-      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, autoAckOn ? NRF24_AA_P5_ON : NRF24_AA_P5_OFF, 5, 5);
+      return _mod->SPIsetRegValue(NRF24_REG_EN_AA, (autoAckOn ? NRF24_AA_P5_ON : NRF24_AA_P5_OFF), 5, 5);
       break;
     default:
       return (ERR_INVALID_PIPE_NUMBER);
@@ -507,6 +509,18 @@ uint8_t nRF24::random() {
   // nRF24 is unable to measure RSSI, hence no TRNG
   // this method is implemented only for PhysicalLayer compatibility
   return(0);
+}
+
+void nRF24::setDirectAction(void (*func)(void)) {
+  // nRF24 is unable to perform direct mode actions
+  // this method is implemented only for PhysicalLayer compatibility
+  (void)func;
+}
+
+void nRF24::readBit(RADIOLIB_PIN_TYPE pin) {
+  // nRF24 is unable to perform direct mode actions
+  // this method is implemented only for PhysicalLayer compatibility
+  (void)pin;
 }
 
 void nRF24::clearIRQ() {

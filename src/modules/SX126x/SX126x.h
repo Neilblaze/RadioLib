@@ -807,6 +807,13 @@ class SX126x: public PhysicalLayer {
    uint32_t getTimeOnAir(size_t len);
 
    /*!
+     \brief Get instantaneous RSSI value during recption of the packet. Should switch to FSK receive mode for LBT implementation.
+
+     \returns Instantaneous RSSI value in dBm, in steps of 0.5dBm
+   */
+   float getRSSIInst();
+
+   /*!
      \brief Set implicit header mode for future reception/transmission.
 
      \returns \ref status_codes
@@ -880,6 +887,20 @@ class SX126x: public PhysicalLayer {
   */
    uint8_t random();
 
+   /*!
+     \brief Dummy method, to ensure PhysicalLayer compatibility.
+
+     \param func Ignored.
+   */
+   void setDirectAction(void (*func)(void));
+
+   /*!
+     \brief Dummy method, to ensure PhysicalLayer compatibility.
+
+     \param pin Ignored.
+   */
+   void readBit(RADIOLIB_PIN_TYPE pin);
+
 #ifndef RADIOLIB_GODMODE
   protected:
 #endif
@@ -921,10 +942,21 @@ class SX126x: public PhysicalLayer {
     int16_t fixImplicitTimeout();
     int16_t fixInvertedIQ(uint8_t iqConfig);
 
-#ifndef RADIOLIB_GODMODE
-  private:
+#if !defined(RADIOLIB_GODMODE) && !defined(RADIOLIB_LOW_LEVEL)
+  protected:
 #endif
     Module* _mod;
+
+    // common low-level SPI interface
+    int16_t SPIwriteCommand(uint8_t cmd, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
+    int16_t SPIwriteCommand(uint8_t* cmd, uint8_t cmdLen, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
+    int16_t SPIreadCommand(uint8_t cmd, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
+    int16_t SPIreadCommand(uint8_t* cmd, uint8_t cmdLen, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
+    int16_t SPItransfer(uint8_t* cmd, uint8_t cmdLen, bool write, uint8_t* dataOut, uint8_t* dataIn, uint8_t numBytes, bool waitForBusy, uint32_t timeout = 5000);
+
+#if !defined(RADIOLIB_GODMODE)
+  protected:
+#endif
 
     uint8_t _bw = 0, _sf = 0, _cr = 0, _ldro = 0, _crcType = 0, _headerType = 0;
     uint16_t _preambleLength = 0;
@@ -943,13 +975,6 @@ class SX126x: public PhysicalLayer {
     size_t _implicitLen = 0;
 
     int16_t config(uint8_t modem);
-
-    // common low-level SPI interface
-    int16_t SPIwriteCommand(uint8_t cmd, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
-    int16_t SPIwriteCommand(uint8_t* cmd, uint8_t cmdLen, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
-    int16_t SPIreadCommand(uint8_t cmd, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
-    int16_t SPIreadCommand(uint8_t* cmd, uint8_t cmdLen, uint8_t* data, uint8_t numBytes, bool waitForBusy = true);
-    int16_t SPItransfer(uint8_t* cmd, uint8_t cmdLen, bool write, uint8_t* dataOut, uint8_t* dataIn, uint8_t numBytes, bool waitForBusy, uint32_t timeout = 5000);
 };
 
 #endif
